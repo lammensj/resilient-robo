@@ -1,0 +1,23 @@
+{
+    "name": "lammensj/resilient-robo",
+    "description": "Robo tasks for lammensj/resilient-docksal",
+    "type": "library",
+    "require": {
+        "consolidation/robo": "^1.4",
+        "php-di/php-di": "^6.0",
+        "symfony/config": "^4.3",
+        "symfony/finder": "^4.3"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jasper Lammens",
+            "email": "lammensjasper@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Resilient\\": "src/"
+        }
+    }
+}
