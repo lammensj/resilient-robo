@@ -109,23 +109,27 @@ class DrupalRoboPlugin extends AbstractRoboPlugin implements RoboPluginDownloade
             $tasks[] = $this->task($drushStackClass)
                 ->drupalRootDirectory($this->configFactory->get('frmwrk_path'))
                 ->drush(sprintf('sqlq --file=%s', reset($dbFiles)->getPathname()));
-        } elseif (file_exists(
-            sprintf('%s/config/sync/core.extension.yml', $this->configFactory->get('frmwrk_path'))
-        )) {
-            $tasks[] = $this->task($drushStackClass)
-                ->drupalRootDirectory($this->configFactory->get('frmwrk_path'))
-                ->drush('si resilient --existing-config');
         } else {
-            $tasks[] = $this->task($drushStackClass)
+            $task = $this->task($drushStackClass)
                 ->drupalRootDirectory($this->configFactory->get('frmwrk_path'))
-                ->siteName($this->configFactory->get('site.name'))
-                ->siteMail($this->configFactory->get('site.email'))
                 ->accountName($this->configFactory->get('site.account.name'))
                 ->accountMail($this->configFactory->get('site.account.email'))
                 ->accountPass($this->configFactory->get('site.account.password'))
                 ->siteInstall('resilient');
-            $tasks[] = $this->taskFilesystemStack()
-                ->mkdir(sprintf('%s/config/dev', $this->configFactory->get('frmwrk_path')));
+
+            if (file_exists(
+                sprintf('%s/config/sync/core.extension.yml', $this->configFactory->get('frmwrk_path'))
+            )) {
+                $task->existingConfig();
+            } else {
+                $task
+                    ->siteName($this->configFactory->get('site.name'))
+                    ->siteMail($this->configFactory->get('site.email'));
+                $tasks[] = $this->taskFilesystemStack()
+                    ->mkdir(sprintf('%s/config/dev', $this->configFactory->get('frmwrk_path')));
+            }
+
+            $tasks[] = $task;
         }
 
         return $tasks;
