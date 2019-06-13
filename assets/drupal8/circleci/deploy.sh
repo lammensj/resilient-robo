@@ -141,7 +141,6 @@ task_config_update() {
   ${DRUSH} updb -y -r ${DRUPAL_ROOT} || runner_sequence rollback
   ${DRUSH} cc drush -r ${DRUPAL_ROOT} || runner_sequence rollback
   ${DRUSH} csim -y -r ${DRUPAL_ROOT} || ${DRUSH} cim -y -r ${DRUPAL_ROOT} || runner_sequence rollback
-  ${DRUSH} entup -y -r ${DRUPAL_ROOT} || runner_sequence rollback
   runner_log_success 'Updating configuration... DONE'
 }
 
