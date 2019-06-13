@@ -72,8 +72,8 @@ parameters:
         - php
     phpcpd:
       directory: htdocs
-      min_lines: 3
-      min_tokens: 15
+      min_lines: 6
+      min_tokens: 70
       exclude:
         - scripts
         - vendor
@@ -164,28 +164,6 @@ parameters:
         - profile
         - test
         - theme
-        - twig
-        - php
-    phpstan:
-      level: 7
-      ignore_patterns:
-        - .docksal
-        - htdocs/drush/Commands
-        - htdocs/load.environment.php
-        - htdocs/scripts
-        - htdocs/app/autoload.php
-        - htdocs/app/.ht.router.php
-        - htdocs/app/index.php
-        - htdocs/app/sites
-        - htdocs/app/update.php
-      triggered_by:
-        - inc
-        - install
-        - module
-        - profile
-        - test
-        - theme
-        - twig
         - php
     phpversion:
       project: '7.3'

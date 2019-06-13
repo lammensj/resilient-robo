@@ -19,7 +19,7 @@ jobs:
           working_directory: '[path_to_composer_working_directory]'
       - save_cache:
           name: 'Composer: save cache'
-          key: composer-vs-{{ checksum "[path_to_composer.lock]" }}
+          key: composer-v1-{{ checksum "[path_to_composer.lock]" }}
           paths:
             - '[path_to_composer_working_directory]/vendor'
             - '[path_to_composer_working_directory]/app/core'
@@ -36,6 +36,7 @@ jobs:
           name: 'Node: download packages'
           command: '[ -f package-lock.json ] && npm ci || echo "No package-lock.json available."'
           working_directory: '[path_to_theme]'
+          shell: /bin/bash -leo pipefail
       - save_cache:
           name: 'Node: save cache'
           key: node-v1-{{ checksum "[path_to_theme]/package-lock.json" }}
@@ -45,6 +46,7 @@ jobs:
           name: 'Node: build'
           command: '[ -f package-lock.json ] && npm run build || echo "No package-lock.json available."'
           working_directory: '[path_to_theme]'
+          shell: /bin/bash -leo pipefail
       # Drupal Paranoia
       - run:
           name: 'Composer: drupal:paranoia'
@@ -53,7 +55,7 @@ jobs:
       # Archive
       - run:
           name: 'General: create zip'
-          command: tar --exclude "[path_to_theme]/node_modules" -czf ../archive.tar.gz .
+          command: tar --exclude "[path_to_theme]/node_modules" --exclude "[path_to_theme]/src" -czf ../archive.tar.gz .
           working_directory: '[path_to_composer_working_directory]'
       - store_artifacts:
           name: 'General: upload artifact'
