@@ -108,7 +108,7 @@ class DrupalRoboPlugin extends AbstractRoboPlugin implements RoboPluginDownloade
         if ($dbFiles->hasResults()) {
             $tasks[] = $this->task($drushStackClass)
                 ->drupalRootDirectory($this->configFactory->get('frmwrk_path'))
-                ->drush(sprintf('sqlq --file=%s', reset($dbFiles)->getPathname()));
+                ->drush(sprintf('sqlq --file=%s', key(iterator_to_array($dbFiles))));
         } else {
             $task = $this->task($drushStackClass)
                 ->drupalRootDirectory($this->configFactory->get('frmwrk_path'))
