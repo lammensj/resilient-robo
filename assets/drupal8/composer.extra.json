@@ -1,0 +1,14 @@
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/lammensj/phpstan-drupal"
+        }
+    ],
+    "require-dev": {
+        "mglaman/phpstan-drupal": "dev-master"
+    },
+    "require": {
+        "boedah/robo-drush": "^4.2"
+    }
+}

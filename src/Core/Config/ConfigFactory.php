@@ -116,8 +116,8 @@ class ConfigFactory implements ConfigFactoryInterface
             $projectRoot
         );
         $this->config->set(
-            sprintf('%s.setup_path', $this->getConfigPrefix()),
-            realpath(dirname($this->get('ROBO_CONFIG')))
+            sprintf('%s.assets_path', $this->getConfigPrefix()),
+            dirname(__DIR__, 3)
         );
         $frmwrkPath = implode('/', [$projectRoot, $this->get('frmwrk_root')]);
         $frmwrkPath = array_reduce(

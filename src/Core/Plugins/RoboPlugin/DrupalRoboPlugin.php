@@ -46,7 +46,7 @@ class DrupalRoboPlugin extends AbstractRoboPlugin implements RoboPluginDownloade
             // Copy local settings files into Drupal directory.
             $source = sprintf(
                 '%s/assets/drupal8/core',
-                $this->configFactory->get('setup_path')
+                $this->configFactory->get('assets_path')
             );
             $tasks[] = $this->taskCopyDir(
                 [$source => $defaultFolderPath]
@@ -114,8 +114,7 @@ class DrupalRoboPlugin extends AbstractRoboPlugin implements RoboPluginDownloade
                 ->drupalRootDirectory($this->configFactory->get('frmwrk_path'))
                 ->accountName($this->configFactory->get('site.account.name'))
                 ->accountMail($this->configFactory->get('site.account.email'))
-                ->accountPass($this->configFactory->get('site.account.password'))
-                ->siteInstall('resilient');
+                ->accountPass($this->configFactory->get('site.account.password'));
 
             if (file_exists(
                 sprintf('%s/config/sync/core.extension.yml', $this->configFactory->get('frmwrk_path'))
@@ -129,7 +128,7 @@ class DrupalRoboPlugin extends AbstractRoboPlugin implements RoboPluginDownloade
                     ->mkdir(sprintf('%s/config/dev', $this->configFactory->get('frmwrk_path')));
             }
 
-            $tasks[] = $task;
+            $tasks[] = $task->siteInstall('resilient');
         }
 
         return $tasks;

@@ -1,0 +1,199 @@
+parameters:
+  ascii:
+    failed: nopecat.txt
+    succeeded: me-gusta.txt
+  bin_dir: ./htdocs/vendor/bin
+  hooks_dir: ./vendor/lammensj/resilient-robo/assets/grumphp/hooks
+  tasks:
+    # Code
+    composer:
+      file: ./htdocs/composer.json
+    git_blacklist:
+      keywords:
+        # PHP
+        - 'die('
+        - 'var_dump('
+        - 'print_r('
+        - 'print('
+        - 'dump('
+        - 'debug_backtrace('
+        - 'file_put_contents('
+        - 'exit;'
+        - 'echo '
+        # JS
+        - 'console.log('
+        # Drupal specific
+        - 'dpm('
+        - 'dsm('
+        - 'pr('
+        - 'dpq('
+        - 'dprint_r('
+        - 'db_queryd('
+        - 'kpr('
+        - 'kprint_r('
+        - 'dd('
+        - 'ddebug_backtrace('
+        - 'drupal_debug('
+        - 'devel_render('
+        - 'kint('
+      triggered_by:
+        - inc
+        - install
+        - module
+        - profile
+        - test
+        - theme
+        - twig
+        - php
+    jsonlint:
+      detect_key_conflicts: true
+    phpcs:
+      standard:
+        - ./htdocs/vendor/drupal/coder/coder_sniffer/Drupal
+        - ./htdocs/vendor/drupal/coder/coder_sniffer/DrupalPractice
+      ignore_patterns:
+        - .docksal
+        - htdocs/drush/Commands
+        - htdocs/load.environment.php
+        - htdocs/scripts
+        - htdocs/app/autoload.php
+        - htdocs/app/.ht.router.php
+        - htdocs/app/index.php
+        - htdocs/app/sites
+        - htdocs/app/update.php
+      triggered_by:
+        - inc
+        - install
+        - module
+        - profile
+        - test
+        - theme
+        - twig
+        - php
+    phpcpd:
+      directory: htdocs
+      min_lines: 3
+      min_tokens: 15
+      exclude:
+        - scripts
+        - vendor
+        - app/core
+        - app/modules/contrib
+        - app/profiles/contrib
+        - app/sites
+        - app/themes/contrib
+      names_exclude:
+        - update.php
+        - index.php
+      triggered_by:
+        - inc
+        - install
+        - module
+        - profile
+        - test
+        - theme
+        - twig
+        - php
+    phplint:
+      exclude:
+        - ./htdocs/scripts
+        - ./htdocs/vendor
+        - ./htdocs/app/core
+        - ./htdocs/app/modules/contrib
+        - ./htdocs/app/profiles/contrib
+        - ./htdocs/app/sites
+        - ./htdocs/app/themes/contrib
+      triggered_by:
+        - inc
+        - install
+        - module
+        - profile
+        - theme
+        - php
+    phpmd:
+      exclude:
+        - htdocs/scripts
+        - htdocs/app/sites
+      triggered_by:
+        - inc
+        - install
+        - module
+        - profile
+        - test
+        - theme
+        - twig
+        - php
+    phpmnd:
+      directory: ./htdocs
+      exclude:
+        - scripts
+        - vendor
+        - app/core
+        - app/modules/contrib
+        - app/profiles/contrib
+        - app/sites
+        - app/themes/contrib
+      triggered_by:
+        - inc
+        - install
+        - module
+        - profile
+        - test
+        - theme
+        - twig
+        - php
+    phpparser:
+      visitors:
+        declare_strict_types: ~
+        never_use_else: ~
+        no_exit_statements: ~
+      ignore_patterns:
+        - .docksal
+        - htdocs/drush/Commands
+        - htdocs/load.environment.php
+        - htdocs/scripts
+        - htdocs/app/autoload.php
+        - htdocs/app/.ht.router.php
+        - htdocs/app/index.php
+        - htdocs/app/sites
+        - htdocs/app/update.php
+      triggered_by:
+        - inc
+        - install
+        - module
+        - profile
+        - test
+        - theme
+        - twig
+        - php
+    phpstan:
+      level: 7
+      ignore_patterns:
+        - .docksal
+        - htdocs/drush/Commands
+        - htdocs/load.environment.php
+        - htdocs/scripts
+        - htdocs/app/autoload.php
+        - htdocs/app/.ht.router.php
+        - htdocs/app/index.php
+        - htdocs/app/sites
+        - htdocs/app/update.php
+      triggered_by:
+        - inc
+        - install
+        - module
+        - profile
+        - test
+        - theme
+        - twig
+        - php
+    phpversion:
+      project: '7.3'
+    securitychecker:
+      lockfile: ./htdocs/composer.lock
+    xmllint: ~
+    yamllint: ~
+    # Commit message
+    git_commit_message:
+      matchers:
+        Must contain JIRA issue number: /[jira_code]-(\d*):/

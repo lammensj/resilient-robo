@@ -1,0 +1,107 @@
+parameters:
+  ascii:
+    failed: nopecat.txt
+    succeeded: me-gusta.txt
+  bin_dir: ./htdocs/vendor/bin
+  hooks_dir: ./vendor/lammensj/resilient-robo/assets/grumphp/hooks
+  tasks:
+    # Code
+    composer:
+      file: ./htdocs/composer.json
+    git_blacklist:
+      keywords:
+        # PHP
+        - 'die('
+        - 'var_dump('
+        - 'print_r('
+        - 'print('
+        - 'dump('
+        - 'debug_backtrace('
+        - 'file_put_contents('
+        - 'exit;'
+        - 'echo '
+        # JS
+        - 'console.log('
+      triggered_by:
+        - test
+        - twig
+        - php
+    jsonlint:
+      detect_key_conflicts: true
+    phpcs:
+      standard:
+        - ./vendor/escapestudios/symfony2-coding-standard/Symfony
+      ignore_patterns:
+        - ./.docksal/
+        - ./RoboFile.php
+      triggered_by:
+        - test
+        - twig
+        - php
+    phpcpd:
+      directory: htdocs
+      min_lines: 3
+      min_tokens: 15
+      exclude:
+        - vendor
+        - var
+      triggered_by:
+        - inc
+        - test
+        - twig
+        - php
+    phplint:
+      exclude:
+        - ./htdocs/vendor
+      triggered_by:
+        - inc
+        - php
+    phpmd:
+      triggered_by:
+        - inc
+        - test
+        - twig
+        - php
+    phpmnd:
+      directory: ./htdocs
+      exclude:
+        - vendor
+        - var
+      triggered_by:
+        - inc
+        - test
+        - twig
+        - php
+    phpparser:
+      visitors:
+        declare_strict_types: ~
+        never_use_else: ~
+        no_exit_statements: ~
+      ignore_patterns:
+        - ./.docksal/
+        - RoboFile.php
+      triggered_by:
+        - inc
+        - test
+        - twig
+        - php
+    phpstan:
+      level: 7
+      ignore_patterns:
+        - ./.docksal/
+        - RoboFile.php
+      triggered_by:
+        - inc
+        - test
+        - twig
+        - php
+    phpversion:
+      project: '7.3'
+    securitychecker:
+      lockfile: ./htdocs/composer.lock
+    xmllint: ~
+    yamllint: ~
+    # Commit message
+    git_commit_message:
+      matchers:
+        Must contain JIRA issue number: /[jira_code]-(\d*):/

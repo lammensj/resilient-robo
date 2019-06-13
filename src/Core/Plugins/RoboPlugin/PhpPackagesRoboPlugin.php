@@ -21,7 +21,7 @@ class PhpPackagesRoboPlugin extends AbstractRoboPlugin implements RoboPluginDown
 
         $sourceList = sprintf(
             '%s/assets/%s/composer.extra.json',
-            $this->configFactory->get('setup_path'),
+            $this->configFactory->get('assets_path'),
             $this->configFactory->get('project_type')
         );
         $destinList = sprintf('%s/composer.extra.json', $this->configFactory->get('project_root'));

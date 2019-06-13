@@ -21,7 +21,7 @@ class CircleCiRoboPlugin extends AbstractRoboPlugin implements RoboPluginDownloa
 
         $circleCiDir = sprintf(
             '%s/assets/%s/circleci',
-            $this->configFactory->get('setup_path'),
+            $this->configFactory->get('assets_path'),
             $this->configFactory->get('project_type')
         );
 
