@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 cd "$(dirname "$0")" || exit
 [ -f runner.sh ] || wget https://raw.githubusercontent.com/stylemistake/runner/master/src/runner.sh
+[ -f jq ] || wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && mv jq-linux64 jq && chmod +x jq
 
 CIRCLECI_TOKEN='abc123'
 BRANCH='testing'
@@ -24,7 +25,7 @@ task_default() {
     shift
   done
 
-  runner_sequence artifact config symlink cleanup
+  runner_sequence artifact config symlink cleanup || return
 }
 
 #######################################
@@ -34,7 +35,8 @@ task_artifact() {
   runner_log_notice 'Retrieving latest build artifact...'
 
   CT_PARAM="?circle-token=${CIRCLECI_TOKEN}"
-  ARTIFACT=$(curl -s "https://circleci.com/api/v1.1/project/github/[repo_id]/latest/artifacts${CT_PARAM}&filter=successful&branch=${BRANCH}" | grep -o 'https://[^"]*')
+  ARTIFACT=$(wget -qO - "https://circleci.com/api/v1.1/project/github/[repo_id]/latest/artifacts${CT_PARAM}&filter=successful&branch=${BRANCH}" | ./jq --raw-output '.[0].url')
+  [ -z ${ARTIFACT} ] && runner_log_error 'Artifact NOT FOUND.' && return
   wget -q ${ARTIFACT}${CT_PARAM} -O archive.tar.gz
 
   runner_log_success 'Retrieving latest build artifact... DONE'
@@ -78,6 +80,9 @@ task_config() {
   cp ${PROJECT_ROOT}/shared/${BRANCH}.settings.private.php ./app/sites/default/settings.private.php
   cp ${PROJECT_ROOT}/shared/${BRANCH}.salt.txt ${PROJECT_ROOT}/shared/backup/${NEXT}/${BRANCH}.salt.txt
   cp ${PROJECT_ROOT}/shared/${BRANCH}.salt.txt salt.txt
+  if [ -s ${PROJECT_ROOT}/shared/${BRANCH}.env ]; then
+    cp ${PROJECT_ROOT}/shared/${BRANCH}.env .env
+  fi
 
   INCL_PRVT_SETTINGS='include $app_root . "/" . $site_path . "/settings.private.php";'
   SETTINGS_FILE=./app/sites/default/settings.php
@@ -100,6 +105,14 @@ task_config_include_files() {
   ln -sfn ${PROJECT_ROOT}/shared/files ./app/sites/default/files
   if [ -f ${PROJECT_ROOT}/shared/private_file_systen ]; then
     ln -sfn ${PROJECT_ROOT}/shared/private_file_systen ../private_file_systen
+  fi
+  if [ -s ./app/".htaccess.${BRANCH}" ]; then
+    rm ./app/.htaccess
+    cp ./app/".htaccess.${BRANCH}" ./app/.htaccess
+  fi
+  if [ -s ./app/".robots.${BRANCH}.txt" ]; then
+    rm ./app/robots.txt
+    cp ./app/".robots.${BRANCH}.txt" ./app/robots.txt
   fi
   runner_log_success 'Including public and private files... DONE'
 }
@@ -139,8 +152,11 @@ task_config_install() {
 task_config_update() {
   runner_log_notice 'Updating configuration...'
   ${DRUSH} updb -y -r ${DRUPAL_ROOT} || runner_sequence rollback
-  ${DRUSH} cc drush -r ${DRUPAL_ROOT} || runner_sequence rollback
-  ${DRUSH} csim -y -r ${DRUPAL_ROOT} || ${DRUSH} cim -y -r ${DRUPAL_ROOT} || runner_sequence rollback
+  ${DRUSH} cim -y -r ${DRUPAL_ROOT} || runner_sequence rollback
+  ${DRUSH} queue:run yaml_content -r ${DRUPAL_ROOT} || echo 'QUEUE RUN FAILED!'
+  ${DRUSH} locale-check || runner_sequence rollback
+  ${DRUSH} locale-update || runner_sequence rollback
+  ${DRUSH} cr || runner_sequence rollback
   runner_log_success 'Updating configuration... DONE'
 }
 
@@ -151,6 +167,12 @@ task_config_update() {
 task_symlink() {
   runner_log_notice 'Rerouting next to current...'
   cd ${PROJECT_ROOT}
+
+  chmod 775 ${NEXT}/app/sites/default ${NEXT}/app/sites/default/settings.private.php
+  sed -i 's/next\//current\//' ${NEXT}/app/sites/default/settings.private.php
+  chmod 555 ${NEXT}/app/sites/default
+  chmod 644 ${NEXT}/app/sites/default/settings.private.php
+
   ln -sfn ${NEXT} current
   ln -sfn current/web www
   rm next
@@ -178,8 +200,9 @@ task_rollback() {
   mkdir -p ${PROJECT_ROOT}/shared/backup/rollback
   ls -t ${PROJECT_ROOT}/shared/backup/build-*.tar.gz -t | head -1 | xargs tar -xC ${PROJECT_ROOT}/shared/backup/rollback --strip-components=1 -f
   [ -f ${PROJECT_ROOT}/shared/backup/rollback/backup.sql.gz ] && gunzip ${PROJECT_ROOT}/shared/backup/rollback/backup.sql.gz || return
+  ${DRUSH} sql-drop -y -r ${DRUPAL_ROOT}
   ${DRUSH} sql-cli < ${PROJECT_ROOT}/shared/backup/rollback/backup.sql
   rm -rf ${PROJECT_ROOT}/shared/backup/rollback
   runner_log_success 'Rolling back... DONE'
-  exit
+  exit 1
 }
