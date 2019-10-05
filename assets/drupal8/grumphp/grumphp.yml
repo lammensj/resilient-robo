@@ -173,5 +173,6 @@ parameters:
     yamllint: ~
     # Commit message
     git_commit_message:
+      enforce_capitalized_subject: false
       matchers:
-        Must contain JIRA issue number: /[jira_code]-(\d*):/
+        Must contain Clubhouse.io issue number: /\[ch(\d*)\]:/
