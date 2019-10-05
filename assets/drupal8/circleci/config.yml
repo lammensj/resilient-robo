@@ -11,15 +11,15 @@ jobs:
       - restore_cache:
           name: 'Composer: restore cache'
           keys:
-            - composer-v1-{{ checksum "[path_to_composer.lock]" }}
-            - composer-v1-
+            - composer-v1-{{ .Branch }}-{{ checksum "[path_to_composer.lock]" }}
+            - composer-v1-{{ .Branch }}-
       - run:
           name: 'Composer: install'
           command: composer install --no-dev --prefer-dist
           working_directory: '[path_to_composer_working_directory]'
       - save_cache:
           name: 'Composer: save cache'
-          key: composer-v1-{{ checksum "[path_to_composer.lock]" }}
+          key: composer-v1-{{ .Branch }}-{{ checksum "[path_to_composer.lock]" }}
           paths:
             - '[path_to_composer_working_directory]/vendor'
             - '[path_to_composer_working_directory]/app/core'
@@ -30,8 +30,8 @@ jobs:
       - restore_cache:
           name: 'Node: restore cache'
           keys:
-            - node-v1-{{ checksum "[path_to_theme]/package-lock.json" }}
-            - node-v1-
+            - node-v1-{{ .Branch }}-{{ checksum "[path_to_theme]/package-lock.json" }}
+            - node-v1-{{ .Branch }}-
       - run:
           name: 'Node: download packages'
           command: '[ -f package-lock.json ] && npm ci || echo "No package-lock.json available."'
@@ -39,7 +39,7 @@ jobs:
           shell: /bin/bash -leo pipefail
       - save_cache:
           name: 'Node: save cache'
-          key: node-v1-{{ checksum "[path_to_theme]/package-lock.json" }}
+          key: node-v1-{{ .Branch }}-{{ checksum "[path_to_theme]/package-lock.json" }}
           paths:
             - '[path_to_theme]/node_modules'
       - run:
@@ -61,7 +61,7 @@ jobs:
           name: 'General: upload artifact'
           path: ./archive.tar.gz
 
-  testing_deploy:
+  acc_deploy:
     docker:
       - image: '[docker_image]'
     steps:
@@ -71,7 +71,7 @@ jobs:
           command: |
             ssh-keyscan -H $PROD_HOST >> ~/.ssh/known_hosts;
             rsync -az ./.circleci/deploy.sh $PROD_USER@$PROD_HOST:./subsites/$TESTING_HOST/deploy.sh;
-            ssh $PROD_USER@$PROD_HOST 'cd ./subsites/$TESTING_HOST && chmod +x ./deploy.sh && bash ./deploy.sh --token=' $CIRCLECI_TOKEN ' --branch=' $CIRCLE_BRANCH;
+            ssh $PROD_USER@$PROD_HOST "cd ./subsites/$TESTING_HOST && chmod +x ./deploy.sh && bash ./deploy.sh --token=$CIRCLECI_TOKEN --branch=$CIRCLE_BRANCH";
 
   prod_deploy:
     docker:
@@ -83,7 +83,7 @@ jobs:
           command: |
             ssh-keyscan -H $PROD_HOST >> ~/.ssh/known_hosts;
             rsync -az ./.circleci/deploy.sh $PROD_USER@$PROD_HOST:./deploy.sh;
-            ssh $PROD_USER@$PROD_HOST 'chmod +x ./deploy.sh && bash ./deploy.sh --token=' $CIRCLECI_TOKEN ' --branch' $CIRCLE_BRANCH;
+            ssh $PROD_USER@$PROD_HOST "chmod +x ./deploy.sh && bash ./deploy.sh --token=$CIRCLECI_TOKEN --branch=$CIRCLE_BRANCH";
 
 workflows:
   version: 2
@@ -94,14 +94,14 @@ workflows:
             branches:
               only:
                 - master
-                - testing
-      - testing_deploy:
+                - acc
+      - acc_deploy:
           requires:
             - build
           filters:
             branches:
               only:
-                - testing
+                - acc
       - prod_deploy:
           requires:
             - build
