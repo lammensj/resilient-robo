@@ -13,7 +13,7 @@ DIFF=$(git -c diff.mnemonicprefix=false --no-pager diff -r -p -m -M --full-index
 
 # Run GrumPHP
 HOOK_COMMAND=$(echo "$(HOOK_COMMAND)" | sed "s/'//g")
-(cd "${HOOK_EXEC_PATH}" && echo "${DIFF}" | fin exec ${HOOK_COMMAND} --git-user="${GIT_USER}" --git-email="${GIT_EMAIL}" ${COMMIT_MSG_FILE})
+(cd "${HOOK_EXEC_PATH}" && echo "${DIFF}" | fin exec ${HOOK_COMMAND} --git-user="${GIT_USER}" --ansi --git-email="${GIT_EMAIL}" ${COMMIT_MSG_FILE})
 
 # Validate exit code of above command
 RC=$?
