@@ -112,6 +112,7 @@ parameters:
         - php
     phpmd:
       exclude:
+        - htdocs/drush
         - htdocs/scripts
         - htdocs/app/sites
       triggered_by:
