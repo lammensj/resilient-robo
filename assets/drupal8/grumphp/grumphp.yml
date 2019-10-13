@@ -166,6 +166,26 @@ parameters:
         - test
         - theme
         - php
+    phpstan:
+      level: 7
+      ignore_patterns:
+        - .docksal
+        - htdocs/drush/Commands
+        - htdocs/load.environment.php
+        - htdocs/scripts
+        - htdocs/app/autoload.php
+        - htdocs/app/.ht.router.php
+        - htdocs/app/index.php
+        - htdocs/app/sites
+        - htdocs/app/update.php
+      triggered_by:
+        - inc
+        - install
+        - module
+        - profile
+        - test
+        - theme
+        - php
     phpversion:
       project: '7.3'
     securitychecker:
