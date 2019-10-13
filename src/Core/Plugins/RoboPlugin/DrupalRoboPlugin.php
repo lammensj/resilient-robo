@@ -51,6 +51,11 @@ class DrupalRoboPlugin extends AbstractRoboPlugin implements RoboPluginDownloade
             $tasks[] = $this->taskCopyDir(
                 [$source => $defaultFolderPath]
             );
+            $tasks[] = $this->taskFilesystemStack()
+                ->copy(
+                    sprintf('%s/default.services.yml', $defaultFolderPath),
+                    sprintf('%s/services.yml', $defaultFolderPath)
+                );
 
             // Insert database credentials.
             $localSettingsFilePath = sprintf('%s/settings.local.php', $defaultFolderPath);
