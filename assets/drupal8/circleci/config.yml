@@ -67,7 +67,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: 'Deploy to testing'
+          name: 'Deploy to ACC'
           command: |
             ssh-keyscan -H $PROD_HOST >> ~/.ssh/known_hosts;
             rsync -az ./.circleci/deploy.sh $PROD_USER@$PROD_HOST:./subsites/$TESTING_HOST/deploy.sh;
@@ -79,7 +79,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: 'Deploy to production'
+          name: 'Deploy to PROD'
           command: |
             ssh-keyscan -H $PROD_HOST >> ~/.ssh/known_hosts;
             rsync -az ./.circleci/deploy.sh $PROD_USER@$PROD_HOST:./deploy.sh;
