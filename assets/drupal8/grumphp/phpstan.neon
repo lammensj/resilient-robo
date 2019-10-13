@@ -1,2 +1,5 @@
 includes:
 	- vendor/mglaman/phpstan-drupal/extension.neon
+
+drupal:
+    drupal_root: /var/www/htdocs/app
