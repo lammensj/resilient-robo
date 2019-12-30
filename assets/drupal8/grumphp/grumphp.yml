@@ -71,7 +71,8 @@ parameters:
         - twig
         - php
     phpcpd:
-      directory: htdocs
+      directory:
+        - htdocs
       min_lines: 6
       min_tokens: 70
       exclude:
