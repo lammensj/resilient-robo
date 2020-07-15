@@ -38,21 +38,6 @@ class DownloadCommands extends AbstractCommands
             }
         );
 
-        // Quality tools.
-        $this->collectionBuilder->addCode(
-            function () {
-                $this->say('Downloading quality tools...');
-            }
-        );
-        /** @var \Resilient\Core\RoboPlugin\RoboPluginDownloaderInterface $grumphp */
-        $grumphp = $this->roboPluginFactory->createInstance(RoboPluginFactoryInterface::GRUMPHP, $pluginConfig);
-        $this->collectionBuilder->addTaskList($grumphp->download());
-        $this->collectionBuilder->addCode(
-            function () {
-                $this->say('Downloading quality tools... DONE');
-            }
-        );
-
         // Additional PHP packages.
         $this->collectionBuilder->addCode(
             function () {
@@ -68,6 +53,21 @@ class DownloadCommands extends AbstractCommands
         $this->collectionBuilder->addCode(
             function () {
                 $this->say('Downloading additional PHP packages... DONE');
+            }
+        );
+
+        // Quality tools.
+        $this->collectionBuilder->addCode(
+            function () {
+                $this->say('Downloading quality tools...');
+            }
+        );
+        /** @var \Resilient\Core\RoboPlugin\RoboPluginDownloaderInterface $grumphp */
+        $grumphp = $this->roboPluginFactory->createInstance(RoboPluginFactoryInterface::GRUMPHP, $pluginConfig);
+        $this->collectionBuilder->addTaskList($grumphp->download());
+        $this->collectionBuilder->addCode(
+            function () {
+                $this->say('Downloading quality tools... DONE');
             }
         );
 

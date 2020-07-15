@@ -2,7 +2,12 @@ grumphp:
   ascii:
     failed: nopecat.txt
     succeeded: me-gusta.txt
-  hooks_dir: ./vendor/lammensj/resilient-robo/assets/grumphp/hooks
+  ignore_unstaged_changes: true
+  hide_circumvention_tip: true
+  fixer:
+    enabled: false
+#  git_hook_variables:
+#    EXEC_GRUMPHP_COMMAND: 'fin exec'
   tasks:
     # Code
     composer:
@@ -48,8 +53,8 @@ grumphp:
       detect_key_conflicts: true
     phpcs:
       standard:
-        - ./htdocs/vendor/drupal/coder/coder_sniffer/Drupal
-        - ./htdocs/vendor/drupal/coder/coder_sniffer/DrupalPractice
+        - ./vendor/drupal/coder/coder_sniffer/Drupal
+        - ./vendor/drupal/coder/coder_sniffer/DrupalPractice
       ignore_patterns:
         - .docksal
         - htdocs/drush/Commands
@@ -168,6 +173,7 @@ grumphp:
         - php
     phpstan:
       level: 7
+      configuration: ./vendor/lammensj/resilient-robo/assets/drupal8/grumphp/phpstan.neon
       ignore_patterns:
         - .docksal
         - htdocs/drush/Commands
