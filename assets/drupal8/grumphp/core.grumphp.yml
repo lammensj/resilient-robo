@@ -176,7 +176,6 @@ grumphp:
         - php
     phpstan:
       level: 7
-      configuration: ./vendor/lammensj/resilient-robo/assets/drupal8/grumphp/phpstan.neon
       ignore_patterns:
         - .docksal
         - htdocs/drush/Commands
