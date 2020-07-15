@@ -1,8 +1,7 @@
-parameters:
+grumphp:
   ascii:
     failed: nopecat.txt
     succeeded: me-gusta.txt
-  bin_dir: ./htdocs/vendor/bin
   hooks_dir: ./vendor/lammensj/resilient-robo/assets/grumphp/hooks
   tasks:
     # Code
