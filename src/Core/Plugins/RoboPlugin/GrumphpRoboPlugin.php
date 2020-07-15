@@ -25,6 +25,11 @@ class GrumphpRoboPlugin extends AbstractRoboPlugin implements RoboPluginDownload
             $this->configFactory->get('project_type')
         );
         if (file_exists($grumphpDir)) {
+            $tasks[] = $this->taskFilesystemStack()
+                ->copy(
+                    sprintf('%s/grumphp.yml', $grumphpDir),
+                    sprintf('%s/grumphp.yml', $this->configFactory->get('project_root'))
+                );
             $tasks[] = $this->taskExec(
                 sprintf('%s/vendor/bin/grumphp git:deinit', $this->configFactory->get('project_root'))
             );

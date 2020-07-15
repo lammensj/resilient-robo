@@ -1,0 +1,207 @@
+parameters:
+  convention.git_commit_message_matchers: ['/\[ch(\d*)\]:/']
+
+grumphp:
+  ascii:
+    failed: nopecat.txt
+    succeeded: me-gusta.txt
+  ignore_unstaged_changes: true
+  hide_circumvention_tip: true
+  fixer:
+    enabled: false
+#  git_hook_variables:
+#    EXEC_GRUMPHP_COMMAND: 'fin exec'
+  tasks:
+    # Code
+    composer:
+      file: ./htdocs/composer.json
+    git_blacklist:
+      keywords:
+        # PHP
+        - 'die('
+        - 'var_dump('
+        - 'print_r('
+        - 'print('
+        - 'dump('
+        - 'debug_backtrace('
+        - 'file_put_contents('
+        - 'exit;'
+        - 'echo '
+        # JS
+        - 'console.log('
+        # Drupal specific
+        - 'dpm('
+        - 'dsm('
+        - 'pr('
+        - 'dpq('
+        - 'dprint_r('
+        - 'db_queryd('
+        - 'kpr('
+        - 'kprint_r('
+        - 'dd('
+        - 'ddebug_backtrace('
+        - 'drupal_debug('
+        - 'devel_render('
+        - 'kint('
+      triggered_by:
+        - inc
+        - install
+        - module
+        - profile
+        - test
+        - theme
+        - twig
+        - php
+    jsonlint:
+      detect_key_conflicts: true
+    phpcs:
+      standard:
+        - ./vendor/drupal/coder/coder_sniffer/Drupal
+        - ./vendor/drupal/coder/coder_sniffer/DrupalPractice
+      ignore_patterns:
+        - .docksal
+        - htdocs/drush/Commands
+        - htdocs/load.environment.php
+        - htdocs/scripts
+        - htdocs/app/autoload.php
+        - htdocs/app/.ht.router.php
+        - htdocs/app/index.php
+        - htdocs/app/sites
+        - htdocs/app/update.php
+      triggered_by:
+        - inc
+        - install
+        - module
+        - profile
+        - test
+        - theme
+        - twig
+        - php
+    phpcpd:
+      directory:
+        - htdocs
+      min_lines: 6
+      min_tokens: 70
+      exclude:
+        - scripts
+        - vendor
+        - app/core
+        - app/modules/contrib
+        - app/profiles/contrib
+        - app/sites
+        - app/themes/contrib
+      names_exclude:
+        - update.php
+        - index.php
+      triggered_by:
+        - inc
+        - install
+        - module
+        - profile
+        - test
+        - theme
+        - twig
+        - php
+    phplint:
+      exclude:
+        - ./htdocs/scripts
+        - ./htdocs/vendor
+        - ./htdocs/app/core
+        - ./htdocs/app/modules/contrib
+        - ./htdocs/app/profiles/contrib
+        - ./htdocs/app/sites
+        - ./htdocs/app/themes/contrib
+      triggered_by:
+        - inc
+        - install
+        - module
+        - profile
+        - theme
+        - php
+    phpmd:
+      exclude:
+        - htdocs/drush
+        - htdocs/scripts
+        - htdocs/app/sites
+      triggered_by:
+        - inc
+        - install
+        - module
+        - profile
+        - test
+        - theme
+        - twig
+        - php
+    phpmnd:
+      directory: ./htdocs
+      exclude:
+        - scripts
+        - vendor
+        - app/core
+        - app/modules/contrib
+        - app/profiles/contrib
+        - app/sites
+        - app/themes/contrib
+      triggered_by:
+        - inc
+        - install
+        - module
+        - profile
+        - test
+        - theme
+        - twig
+        - php
+    phpparser:
+      visitors:
+        declare_strict_types: ~
+        never_use_else: ~
+        no_exit_statements: ~
+      ignore_patterns:
+        - .docksal
+        - htdocs/drush/Commands
+        - htdocs/load.environment.php
+        - htdocs/scripts
+        - htdocs/app/autoload.php
+        - htdocs/app/.ht.router.php
+        - htdocs/app/index.php
+        - htdocs/app/sites
+        - htdocs/app/update.php
+      triggered_by:
+        - inc
+        - install
+        - module
+        - profile
+        - test
+        - theme
+        - php
+    phpstan:
+      level: 7
+      configuration: ./vendor/lammensj/resilient-robo/assets/drupal8/grumphp/phpstan.neon
+      ignore_patterns:
+        - .docksal
+        - htdocs/drush/Commands
+        - htdocs/load.environment.php
+        - htdocs/scripts
+        - htdocs/app/autoload.php
+        - htdocs/app/.ht.router.php
+        - htdocs/app/index.php
+        - htdocs/app/sites
+        - htdocs/app/update.php
+      triggered_by:
+        - inc
+        - install
+        - module
+        - profile
+        - test
+        - theme
+        - php
+    phpversion:
+      project: '7.3'
+    securitychecker:
+      lockfile: ./htdocs/composer.lock
+    xmllint: ~
+    yamllint: ~
+    # Commit message
+    git_commit_message:
+      enforce_capitalized_subject: false
+      matchers: '%convention.git_commit_message_matchers%'

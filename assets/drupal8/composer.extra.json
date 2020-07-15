@@ -5,10 +5,5 @@
     },
     "require": {
         "digipolisgent/robo-drush": "dev-master"
-    },
-    "extra": {
-        "grumphp": {
-            "config-default-path": "vendor/lammensj/resilient-robo/assets/drupal8/grumphp/grumphp.yml"
-        }
     }
 }
