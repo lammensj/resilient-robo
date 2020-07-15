@@ -30,6 +30,8 @@ class PhpPackagesRoboPlugin extends AbstractRoboPlugin implements RoboPluginDown
             !file_exists($destinList)
             && file_exists($sourceList)
         ) {
+            $tasks[] = $this->taskFilesystemStack()
+                ->copy($sourceList, $destinList);
             $tasks[] = $this->taskComposerUpdate()
                 ->workingDir($this->configFactory->get('project_root'))
                 ->option('lock');
